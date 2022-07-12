@@ -13,9 +13,13 @@ import {useEffect, useState} from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-gesture-handler'
 import {NavigationContainer} from "@react-navigation/native";
+import {createStackNavigator} from "@react-navigation/stack"
+import Map from "@screens/Map";
 
 export default function App() {
     const [isReady, setIsReady] = useState(false)
+    const Stack = createStackNavigator()
+
     const [isLoaded] = useFonts({
         'poppins': Poppins_400Regular,
         'poppins-medium': Poppins_500Medium,
@@ -47,7 +51,22 @@ export default function App() {
         <Provider store={store}>
             <NavigationContainer>
                 <SafeAreaProvider>
-                    <Home/>
+                    <Stack.Navigator>
+                        <Stack.Screen
+                            name={"Home"}
+                            component={Home}
+                            options={{
+                                headerShown: false
+                            }}
+                            navigationKey={"home"}/>
+                        <Stack.Screen
+                            name={"Map"}
+                            component={Map}
+                            options={{
+                                headerShown: false
+                            }}
+                            navigationKey={"map"}/>
+                    </Stack.Navigator>
                 </SafeAreaProvider>
             </NavigationContainer>
         </Provider>
