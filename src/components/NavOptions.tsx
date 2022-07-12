@@ -4,28 +4,36 @@ import car from "@assets/car.png";
 import food from "@assets/burger.png";
 import tw from "@lib/tailwind";
 import Icon from 'react-native-vector-icons/AntDesign';
-
+import {useNavigation} from "@react-navigation/native";
+import "react-native-gesture-handler"
 
 const data = [
     {
         id: "1",
         title: "Get a ride",
         image: car,
-        screen: "",
+        screen: "Map",
     },
     {
         id: "2",
         title: "Order Food",
         image: food,
-        screen: "",
+        screen: "Map",
     }
 ]
 
 function NavOptions() {
 
+    const navigation = useNavigation();
+
     return (
         <FlatList data={data} horizontal style={tw`w-full`} scrollEnabled={false} keyExtractor={(item) => item.id} renderItem={({item}) => (
-            <TouchableOpacity style={tw`p-2 pl-6 pb-8 pt-4 bg-gray-100 m-2 w-36 rounded-md`}>
+            <TouchableOpacity
+                onPress={()=>{
+                    // @ts-ignore
+                    navigation.navigate(item.screen)
+                }}
+                style={tw`p-2 pl-6 pb-8 pt-4 bg-gray-200 m-2 w-36 rounded-md`}>
                 <View>
                     <Image source={item.image} style={{height: 80, width: 80, resizeMode: 'contain'}}/>
                     <Text style={tw`text-medium mt-4`}>
