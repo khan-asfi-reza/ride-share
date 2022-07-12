@@ -1,20 +1,56 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import {Provider} from "react-redux";
+import {store} from "./store";
+import Home from "@screens/Home";
+import {
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+    useFonts
+} from "@expo-google-fonts/poppins";
+import {SafeAreaProvider} from "react-native-safe-area-context";
+import {useEffect, useState} from "react";
+import * as SplashScreen from 'expo-splash-screen';
+import 'react-native-gesture-handler'
+import {NavigationContainer} from "@react-navigation/native";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    const [isReady, setIsReady] = useState(false)
+    const [isLoaded] = useFonts({
+        'poppins': Poppins_400Regular,
+        'poppins-medium': Poppins_500Medium,
+        "poppins-semibold": Poppins_600SemiBold,
+        "poppins-bold": Poppins_700Bold,
+    })
+
+    useEffect(() => {
+        // Stop the Splash Screen from being hidden.
+        const showSplashScreen = async () => {
+            await SplashScreen.preventAutoHideAsync();
+        }
+        showSplashScreen().then();
+    }, []);
+
+    useEffect(() => {
+        // Once our data is ready, hide the Splash Screen
+        const hideSplashScreen = async () => {
+            await SplashScreen.hideAsync();
+            await setIsReady(true);
+        }
+        if (isLoaded) hideSplashScreen().then();
+    }, [isReady, isLoaded])
+
+    if (!isReady) return null;
+
+
+    return (
+        <Provider store={store}>
+            <NavigationContainer>
+                <SafeAreaProvider>
+                    <Home/>
+                </SafeAreaProvider>
+            </NavigationContainer>
+        </Provider>
+    );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
