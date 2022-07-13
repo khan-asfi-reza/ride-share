@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "share-ride",
-    "slug": "share-ride",
+    "name": "rideshare",
+    "slug": "rideshare",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -37,7 +37,7 @@
         "@rnmapbox/maps",
         {
           "RNMapboxMapsImpl": "maplibre",
-          "RNMapboxMapsDownloadToken": "sk.ey...qg"
+          "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoia2hhbmFzZmlyZXphIiwiYSI6ImNsNWsxcHVtazAzejEzaWp2dTFkaGVubDUifQ.IvBLC-8uN2hUdB4zwCu0Lg"
         }
       ]
     ]
