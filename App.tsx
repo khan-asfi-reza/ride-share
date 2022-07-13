@@ -14,7 +14,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-gesture-handler'
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack"
-import Map from "@screens/Map";
+import MapScreen from "@screens/MapScreen";
 
 export default function App() {
     const [isReady, setIsReady] = useState(false)
@@ -61,7 +61,7 @@ export default function App() {
                             navigationKey={"home"}/>
                         <Stack.Screen
                             name={"Map"}
-                            component={Map}
+                            component={MapScreen}
                             options={{
                                 headerShown: false
                             }}
