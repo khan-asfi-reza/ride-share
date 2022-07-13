@@ -23,13 +23,6 @@ module.exports = function(api) {
           path: '.env'
         }
       ],
-      [
-        "@rnmapbox/maps",
-        {
-          "RNMapboxMapsImpl": "maplibre",
-          "RNMapboxMapsDownloadToken": "sk.ey...qg"
-        }
-      ]
     ],
   };
 };
