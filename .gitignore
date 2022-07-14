@@ -2,6 +2,7 @@ node_modules/
 .expo/
 dist/
 .env
+android/gradle.properties
 npm-debug.*
 *.jks
 *.p8
