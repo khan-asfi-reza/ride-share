@@ -1,7 +1,7 @@
-{
+export default {
   "expo": {
-    "name": "rideshare",
-    "slug": "rideshare",
+    "name": "Ride Share",
+    "slug": "Ride-Share",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -37,7 +37,7 @@
         "@rnmapbox/maps",
         {
           "RNMapboxMapsImpl": "maplibre",
-          "RNMapboxMapsDownloadToken": "sk.eyJ1Ijoia2hhbmFzZmlyZXphIiwiYSI6ImNsNWsxcHVtazAzejEzaWp2dTFkaGVubDUifQ.IvBLC-8uN2hUdB4zwCu0Lg"
+          "RNMapboxMapsDownloadToken": process.env.MAPBOX_DOWNLOAD
         }
       ]
     ]
