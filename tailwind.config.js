@@ -4,9 +4,11 @@ module.exports = {
     plugins: [
         plugin(({ addUtilities }) => {
             addUtilities({
+                'text-base': {
+                    fontFamily: "poppins",
+                },
                 'text-regular': {
                     fontFamily: "poppins",
-
                 },
                 'text-medium': {
                     fontFamily: "poppins-medium",
