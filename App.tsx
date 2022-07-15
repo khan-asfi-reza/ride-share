@@ -15,10 +15,13 @@ import 'react-native-gesture-handler'
 import {NavigationContainer} from "@react-navigation/native";
 import {createStackNavigator} from "@react-navigation/stack"
 import MapScreen from "@screens/MapScreen";
+import LocationProvider from "./src/layout/LocationLayout";
+import {KeyboardAvoidingView} from "react-native";
 
 export default function App() {
-    const [isReady, setIsReady] = useState(false)
-    const Stack = createStackNavigator()
+    const [isReady, setIsReady] = useState(false);
+    const Stack = createStackNavigator();
+
 
     const [isLoaded] = useFonts({
         'poppins': Poppins_400Regular,
@@ -44,6 +47,7 @@ export default function App() {
         if (isLoaded) hideSplashScreen().then();
     }, [isReady, isLoaded])
 
+
     if (!isReady) return null;
 
 
@@ -51,22 +55,27 @@ export default function App() {
         <Provider store={store}>
             <NavigationContainer>
                 <SafeAreaProvider>
-                    <Stack.Navigator>
-                        <Stack.Screen
-                            name={"Home"}
-                            component={Home}
-                            options={{
-                                headerShown: false
-                            }}
-                            navigationKey={"home"}/>
-                        <Stack.Screen
-                            name={"Map"}
-                            component={MapScreen}
-                            options={{
-                                headerShown: false
-                            }}
-                            navigationKey={"map"}/>
-                    </Stack.Navigator>
+                    <LocationProvider>
+                        <KeyboardAvoidingView
+                            style={{flex: 1}}>
+                            <Stack.Navigator>
+                                <Stack.Screen
+                                    name={"Home"}
+                                    component={Home}
+                                    options={{
+                                        headerShown: false
+                                    }}
+                                    navigationKey={"home"}/>
+                                <Stack.Screen
+                                    name={"Map"}
+                                    component={MapScreen}
+                                    options={{
+                                        headerShown: false
+                                    }}
+                                    navigationKey={"map"}/>
+                            </Stack.Navigator>
+                        </KeyboardAvoidingView>
+                    </LocationProvider>
                 </SafeAreaProvider>
             </NavigationContainer>
         </Provider>
