@@ -1,71 +1,111 @@
-import MapView, {Marker} from "react-native-maps";
 import tw from "@lib/tailwind";
 import {useSelector} from "react-redux";
-import {selectOrigin} from "@slices/navSlice";
-import MapboxGL from "@rnmapbox/maps";
-// @ts-ignore
+import {selectDestination, selectOrigin} from "@slices/navSlice";
+import {TouchableOpacity, View} from "react-native";
+import MapboxGL, {MapView} from "@components/Mapbox";
+import {useEffect, useRef, useState} from "react";
 import {MAPBOX} from "@env";
-import {View} from "react-native";
-import {useEffect, useState} from "react";
-
-MapboxGL.setAccessToken(MAPBOX)
+import MapboxClient from "mapbox"
+import Icon from "react-native-vector-icons/AntDesign";
+import {useNavigation} from "@react-navigation/native";
 
 function Map() {
     const origin = useSelector(selectOrigin);
-    const defaultStyle = {
-        version: 8,
-        name: 'Land',
-        sources: {
-            map: {
-                type: 'raster',
-                tiles: ['https://a.tile.openstreetmap.org/{z}/{x}/{y}.png'],
-                tileSize: 256,
-                minzoom: 1,
-                maxzoom: 19,
-            },
-        },
-        layers: [
-            {
-                id: 'background',
-                type: 'background',
-                paint: {
-                    'background-color': '#f2efea',
-                },
-            },
-            {
-                id: 'map',
-                type: 'raster',
-                source: 'map',
-                paint: {
-                    'raster-fade-duration': 100,
-                },
-            },
-        ],
-    };
-    const [state, setState] = useState({
-        coordinates: [-76.706124, 39.268950],
-        location:  [-76.706124, 39.268950],
-        showUserLocation: true,
-        isAndroidPermissionGranted: true,
-    });
+    const destination = useSelector(selectDestination);
+    const [route, setRoute] = useState(null);
+    const mapView = useRef(null);
+    const navigation = useNavigation();
 
     useEffect(() => {
+        const mapboxClient = new MapboxClient(MAPBOX);
+        if (destination && origin) {
+            const fetchDirections = async () => {
+                const originLatLng = {
+                    latitude: origin.location[1],
+                    longitude: origin.location[0],
+                };
 
-    }, []);
+                const destLatLng = {
+                    latitude: destination.location[1],
+                    longitude: destination.location[0],
+                };
+
+                const requestOptions = {
+                    profile: 'driving',
+                    geometry: 'polyline',
+                };
+                let res = null;
+                try {
+                    res = await mapboxClient.getDirections([
+                        originLatLng,
+                        destLatLng,
+                    ], requestOptions);
+                } catch (e) {
+                    console.log(e);
+                }
+
+                if (res !== null) {
+                    const directions = res.entity.routes[0];
+                    mapView.current.fitBounds(destination.location, origin.location, 40, 200)
+                    setRoute({directions: directions});
+                }
+            }
+            fetchDirections()
+                .then()
+        } else {
+            setRoute(null);
+        }
+    }, [destination, origin])
+
+    // const onDragEndOrigin = (e: any) => {
+    //     dispatch(setOrigin(
+    //         {
+    //             location: e.geometry.coordinates
+    //         }
+    //     ))
+    // };
 
 
     return (
-       <View style={tw`flex-1`}>
-           <MapboxGL.MapView
-               styleJSON={JSON.stringify(defaultStyle)}
-               surfaceView={true}
-               zoomEnabled={true}
-               style={tw`flex-1`}>
-               <MapboxGL.Camera zoomLevel={15} centerCoordinate={state.coordinates}/>
-               <MapboxGL.PointAnnotation id={"Marker"} coordinate={state.coordinates} />
-           </MapboxGL.MapView>
+        <View style={tw`flex-1 relative`}>
+            <TouchableOpacity onPress={() => {
+                // @ts-ignore
+                navigation.navigate('Home')
+            }}
+                              style={tw`absolute top-4 left-4 flex z-50 justify-center items-center text-center bg-black w-7 h-7 rounded-full`}>
+                <Icon name={"arrowleft"} color={"white"} style={tw`text-center text-lg`}/>
+            </TouchableOpacity>
+            <MapView
+                surfaceView
 
-       </View>
+                userLocationVerticalAlignment={1}
+                zoomEnabled={true}
+                style={tw`flex-1`}>
+                <>
+                    <MapboxGL.Camera ref={mapView} zoomLevel={10} centerCoordinate={origin.location}/>
+                    <MapboxGL.PointAnnotation id={"Marker"}
+                                              title={"Location"}
+                        // onDragEnd={onDragEndOrigin}
+                                              coordinate={origin.location}/>
+                    {
+                        destination &&
+                        <MapboxGL.PointAnnotation id={"Marker2"}
+                                                  coordinate={destination.location}/>
+                    }
+                    {
+                        route &&
+                        <MapboxGL.ShapeSource id="routeSource" shape={route.directions.geometry}>
+                            <MapboxGL.LineLayer id="routeFill" style={{
+                                lineColor: '#415cca',
+                                lineWidth: 5,
+                                lineOpacity: 0.84,
+                            }}/>
+                        </MapboxGL.ShapeSource>
+                    }
+                </>
+            </MapView>
+
+        </View>
     );
 }
 
