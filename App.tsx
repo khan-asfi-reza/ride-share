@@ -1,6 +1,5 @@
 import {Provider} from "react-redux";
 import {store} from "./store";
-import Home from "@screens/Home";
 import {
     Poppins_400Regular,
     Poppins_500Medium,
@@ -13,14 +12,18 @@ import {useEffect, useState} from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-gesture-handler'
 import {NavigationContainer} from "@react-navigation/native";
-import {createStackNavigator} from "@react-navigation/stack"
-import MapScreen from "@screens/MapScreen";
 import LocationProvider from "./src/layout/LocationLayout";
-import {KeyboardAvoidingView} from "react-native";
+import {KeyboardAvoidingView, Text} from "react-native";
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from "react-native-vector-icons/Ionicons";
+import tw from "@lib/tailwind";
+import HomeStack from "./src/stacks/HomeStack";
+import ProfileStack from "./src/stacks/ProfileStack";
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
     const [isReady, setIsReady] = useState(false);
-    const Stack = createStackNavigator();
 
 
     const [isLoaded] = useFonts({
@@ -58,22 +61,37 @@ export default function App() {
                     <LocationProvider>
                         <KeyboardAvoidingView
                             style={{flex: 1}}>
-                            <Stack.Navigator>
-                                <Stack.Screen
-                                    name={"Home"}
-                                    component={Home}
-                                    options={{
-                                        headerShown: false
-                                    }}
-                                    navigationKey={"home"}/>
-                                <Stack.Screen
-                                    name={"Map"}
-                                    component={MapScreen}
-                                    options={{
-                                        headerShown: false
-                                    }}
-                                    navigationKey={"map"}/>
-                            </Stack.Navigator>
+                            <Tab.Navigator initialRouteName={"Home"}>
+                                <Tab.Screen name={"Home"}
+                                            options={{
+                                                headerShown: false,
+                                                tabBarLabel: (props)=>(
+                                                    <Text style={tw.style(`text-regular text-sm`, props.focused ? `text-gray-900` : `text-gray-500`)}>
+                                                        Home
+                                                    </Text>
+                                                ),
+                                                tabBarIcon: ({size, focused, color}) => (
+                                                    <Icon size={18} name={"home"} style={tw.style(focused ? `text-gray-900` : `text-gray-500`)}/>)
+
+                                            }}
+                                            component={HomeStack}
+                                />
+                                <Tab.Screen name={"Profile"}
+                                            options={{
+                                                headerShown: false,
+                                                tabBarLabel: (props)=>(
+                                                    <Text style={tw.style(`text-regular text-sm`, props.focused ? `text-gray-900` : `text-gray-500`)}>
+                                                        Profile
+                                                    </Text>
+                                                ),
+                                                tabBarIcon: ({size, focused, color}) => (
+                                                    <Icon size={18} name={'person'} style={tw.style(focused ? `text-gray-900` : `text-gray-500`)}/>),
+
+
+                                            }}
+                                            component={ProfileStack}
+                                />
+                            </Tab.Navigator>
                         </KeyboardAvoidingView>
                     </LocationProvider>
                 </SafeAreaProvider>
