@@ -70,7 +70,7 @@ function Map() {
         <View style={tw`flex-1 relative`}>
             <TouchableOpacity onPress={() => {
                 // @ts-ignore
-                navigation.navigate('Home')
+                navigation.navigate('HomeScreen')
             }}
                               style={tw`absolute top-4 left-4 flex z-50 justify-center items-center text-center bg-black w-7 h-7 rounded-full`}>
                 <Icon name={"arrowleft"} color={"white"} style={tw`text-center text-lg`}/>
