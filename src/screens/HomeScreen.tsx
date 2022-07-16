@@ -8,7 +8,7 @@ import {setOrigin} from "@slices/navSlice";
 import MapAutocomplete from "@components/MapAutocomplete";
 import Shortcuts from "@components/Shortcuts";
 
-function Home() {
+function HomeScreen() {
     const dispatch = useDispatch()
     const [query, setQuery] = useState('')
 
@@ -33,5 +33,5 @@ function Home() {
 }
 
 
-export default Home;
+export default HomeScreen;
 
