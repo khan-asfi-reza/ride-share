@@ -7,10 +7,12 @@ import Premium from "@assets/premium.png";
 import Sedan from "@assets/sedan.png";
 import XL from "@assets/xl.png";
 import Moto from "@assets/moto.png";
-import {useSelector} from "react-redux";
-import {selectDestination, selectOrigin} from "@slices/navSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {selectDestination, selectOrigin, selectTravelTimeInfo, setTravelTimeInfo} from "@slices/navSlice";
 import axios from "axios";
 import {MAPBOX} from "@env";
+import moment from "moment";
+import {formatTime} from "@lib/time";
 
 const data = [
     {
@@ -44,18 +46,24 @@ function RideOptions() {
     const [selected, setSelected] = useState(null);
     const origin = useSelector(selectOrigin);
     const destination = useSelector(selectDestination);
+    const travelInfo = useSelector(selectTravelTimeInfo);
     const [distance, setDistance] = useState(null);
+    const dispatch = useDispatch();
+
 
     const parseCoords = (coords) => {
+        console.log(`${coords.location[0]},${coords.location[1]}`)
         return `${coords.location[0]},${coords.location[1]}`
     }
 
     useEffect(() => {
         const getDistance = async () => {
-            axios.get(`https://api.mapbox.com/directions-matrix/v1/mapbox/driving-traffic/${parseCoords(origin)};${parseCoords(destination)}?access_token=${MAPBOX}`)
+            axios.get(`https://api.mapbox.com/optimized-trips/v1/mapbox/driving/${parseCoords(origin)};${parseCoords(destination)}?access_token=${MAPBOX}`)
                 .then((res) => {
-                    setDistance(res.data)
-                    console.log(res.data)
+                    dispatch(setTravelTimeInfo({
+                        distance: (res.data.trips[0]?.distance  / 1000).toFixed(2),
+                        duration: formatTime(res.data.trips[0]?.duration)
+                    }))
                 })
                 .catch((e)=>{
                     console.log(e)
@@ -68,7 +76,7 @@ function RideOptions() {
 
 
     return (
-        <ScrollView style={tw`bg-white flex-grow`}>
+        <SafeAreaView style={tw`bg-white flex-grow`}>
             <SafeAreaView>
                 <TouchableOpacity
                     onPress={()=>{
@@ -78,39 +86,39 @@ function RideOptions() {
                     <Icon name={"chevron-left"}/>
                 </TouchableOpacity>
                 <Text style={tw`text-center py-5 text-xl text-medium`}>
-                    Select a ride
+                    Select a ride - {travelInfo.distance} KM
                 </Text>
             </SafeAreaView>
-            <SafeAreaView>
+            <FlatList style={tw`flex-1`} data={data} renderItem={({item: {id, title, multi, image}, item})=>(
+                <TouchableOpacity onPress={()=>{
+                    setSelected(item)
+                }} style={tw.style(`flex-row justify-between items-center px-10`,
+                    selected && id === selected.id && `bg-gray-200 rounded-md`
+                )}>
+                    <View style={tw`flex-row items-center justify-center`}>
+                        <Image source={image} style={{width: 100, height: 100, resizeMode: 'contain'}}/>
+                        <View>
+                            <Text style={tw`text-lg text-medium`}>
+                                {title}
+                            </Text>
+                            <Text>
+                                {travelInfo.duration} Travel
+                            </Text>
 
-                <FlatList scrollEnabled={true} data={data} renderItem={({item: {id, title, multi, image}, item})=>(
-                    <TouchableOpacity onPress={()=>{
-                        setSelected(item)
-                    }} style={tw.style(`flex-row justify-between items-center px-10`,
-                                       selected && id === selected.id && `bg-gray-200 rounded-md`
-                        )}>
-                        <View style={tw`flex-row items-center justify-center`}>
-                            <Image source={image} style={{width: 100, height: 100, resizeMode: 'contain'}}/>
-                            <View>
-                                <Text style={tw`text-lg text-medium`}>
-                                    {title}
-                                </Text>
-                                <Text>
-                                    {"2 Hours"}
-                                </Text>
-                                <Text>
-                                    {typeof distance}
-                                </Text>
-                            </View>
                         </View>
-                        <Text style={tw`text-regular text-base`}>
-                            BDT 992
-                        </Text>
-                    </TouchableOpacity>
+                    </View>
+                    <Text style={tw`text-semibold font-semibold text-base`}>
+                        BDT {((travelInfo.distance || 1) * 10 * multi).toFixed(1)}
+                    </Text>
+                </TouchableOpacity>
 
-                )} keyExtractor={(item)=> item.id}/>
-            </SafeAreaView>
-        </ScrollView>
+            )} keyExtractor={(item)=> item.id}/>
+            <TouchableOpacity style={tw`bg-black text-white text-regular px-4 py-4`}>
+                <Text style={tw`text-center text-white text-regular text-lg`}>
+                    Select {selected?.title}
+                </Text>
+            </TouchableOpacity>
+        </SafeAreaView>
     );
 }
 
