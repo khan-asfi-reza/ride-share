@@ -1,6 +1,7 @@
 import {FlatList, Text, TouchableOpacity, View} from "react-native";
 import tw from "@lib/tailwind";
 import Icon from "react-native-vector-icons/Ionicons";
+import {useNavigation} from "@react-navigation/native";
 
 const favorites = [
     {
@@ -19,6 +20,8 @@ const favorites = [
 
 
 export default function Shortcuts(){
+    const navigation = useNavigation();
+
     return(
         <FlatList style={tw`mt-4`}
                   data={favorites}
