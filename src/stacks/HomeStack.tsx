@@ -1,6 +1,7 @@
 import {createStackNavigator} from "@react-navigation/stack";
 import HomeScreen from "@screens/HomeScreen";
 import MapScreen from "@screens/MapScreen";
+import SetShortcutScreen from "@screens/SetShortcutScreen";
 
 const Stack = createStackNavigator();
 
@@ -9,6 +10,9 @@ const HomeStack = () => (
         <Stack.Screen
             name={"HomeScreen"}
             component={HomeScreen}
+            initialParams={{
+                rerender: false
+            }}
             options={{
                 headerShown: false
             }}
@@ -20,6 +24,13 @@ const HomeStack = () => (
                 headerShown: false
             }}
             navigationKey={"mapScreen"}/>
+        <Stack.Screen
+            name={"SetShortcutScreen"}
+            component={SetShortcutScreen}
+            options={{
+                headerShown: false
+            }}
+        />
     </Stack.Navigator>
 )
 export default HomeStack;
