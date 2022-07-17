@@ -3,7 +3,10 @@ import {createSlice, Draft, PayloadAction} from "@reduxjs/toolkit";
 interface NavState {
     origin: any,
     destination: any,
-    travelTimeInfo: any,
+    travelTimeInfo: {
+        distance: any,
+        duration: any
+    },
     userLocation: {
         country: null,
         location: null
@@ -13,7 +16,10 @@ interface NavState {
 const initialState: NavState = {
     origin: null,
     destination: null,
-    travelTimeInfo: null,
+    travelTimeInfo: {
+        distance: 0,
+        duration: '0'
+    },
     userLocation: {
         country: null,
         location: null
