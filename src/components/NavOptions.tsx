@@ -12,13 +12,13 @@ const data = [
         id: "1",
         title: "Get a ride",
         image: car,
-        screen: "Map",
+        screen: "MapScreen",
     },
     {
         id: "2",
         title: "Get a Chopper",
         image: chopper,
-        screen: "Map",
+        screen: "MapScreen",
     }
 ]
 
