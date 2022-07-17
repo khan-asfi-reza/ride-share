@@ -1,5 +1,5 @@
-<div style="display: flex; flex-direction: column; justify-content: center;align-items: center">
-    <img src="https://github.com/khan-asfi-reza/ride-share/blob/master/assets/logo.png" alt="Ride Share">
+<div align="center" style="display: flex; flex-direction: column; justify-content: center;align-items: center">
+    <img height="100" width="100" src="https://github.com/khan-asfi-reza/ride-share/blob/master/assets/logo.png" alt="Ride Share">
     <h1>
         Ride Share
     </h1>
