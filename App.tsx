@@ -59,19 +59,22 @@ export default function App() {
             <NavigationContainer>
                 <SafeAreaProvider>
                     <LocationProvider>
+
                         <KeyboardAvoidingView
                             style={{flex: 1}}>
                             <Tab.Navigator initialRouteName={"Home"}>
                                 <Tab.Screen name={"Home"}
                                             options={{
                                                 headerShown: false,
-                                                tabBarLabel: (props)=>(
-                                                    <Text style={tw.style(`text-regular text-sm`, props.focused ? `text-gray-900` : `text-gray-500`)}>
+                                                tabBarLabel: (props) => (
+                                                    <Text
+                                                        style={tw.style(`text-regular text-sm`, props.focused ? `text-gray-900` : `text-gray-500`)}>
                                                         Home
                                                     </Text>
                                                 ),
                                                 tabBarIcon: ({size, focused, color}) => (
-                                                    <Icon size={18} name={"home"} style={tw.style(focused ? `text-gray-900` : `text-gray-500`)}/>)
+                                                    <Icon size={18} name={"home"}
+                                                          style={tw.style(focused ? `text-gray-900` : `text-gray-500`)}/>)
 
                                             }}
                                             component={HomeStack}
@@ -79,13 +82,15 @@ export default function App() {
                                 <Tab.Screen name={"Profile"}
                                             options={{
                                                 headerShown: false,
-                                                tabBarLabel: (props)=>(
-                                                    <Text style={tw.style(`text-regular text-sm`, props.focused ? `text-gray-900` : `text-gray-500`)}>
+                                                tabBarLabel: (props) => (
+                                                    <Text
+                                                        style={tw.style(`text-regular text-sm`, props.focused ? `text-gray-900` : `text-gray-500`)}>
                                                         Profile
                                                     </Text>
                                                 ),
                                                 tabBarIcon: ({size, focused, color}) => (
-                                                    <Icon size={18} name={'person'} style={tw.style(focused ? `text-gray-900` : `text-gray-500`)}/>),
+                                                    <Icon size={18} name={'person'}
+                                                          style={tw.style(focused ? `text-gray-900` : `text-gray-500`)}/>),
 
 
                                             }}
@@ -93,6 +98,7 @@ export default function App() {
                                 />
                             </Tab.Navigator>
                         </KeyboardAvoidingView>
+
                     </LocationProvider>
                 </SafeAreaProvider>
             </NavigationContainer>
