@@ -5,6 +5,8 @@ import {useNavigation} from "@react-navigation/native";
 import {useEffect, useState} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {StackNavigationProp} from "@react-navigation/stack";
+import {useSelector} from "react-redux";
+import {selectOrigin} from "@slices/navSlice";
 
 const favorites = [
     {
@@ -27,12 +29,16 @@ const favorites = [
 
 export interface ShortcutProps{
     rerender?: boolean,
-    dispatcher?(coordinates): void
+    dispatcher?(coordinates): void,
+    originEscape?:boolean,
+    edit?: boolean,
+    onEdit?:Function
 }
 
-export default function Shortcuts({rerender, dispatcher}: ShortcutProps){
+export default function Shortcuts({rerender, dispatcher, originEscape, edit=false, onEdit}: ShortcutProps){
     const navigation = useNavigation<StackNavigationProp<any>>();
     const [shortcut, setShortcut] = useState([]);
+    const origin = useSelector(selectOrigin);
 
     const getShortcutFromStorage = async (key, replacement) => {
         const shortcut = await AsyncStorage.getItem(key);
@@ -52,6 +58,16 @@ export default function Shortcuts({rerender, dispatcher}: ShortcutProps){
         }
     }
 
+    const skipIfOrigin = (item) => {
+        if(originEscape){
+            return !(origin &&
+                item.coordinates &&
+                item.coordinates[0] === origin.location[0] &&
+                item.coordinates[1] && origin.location[1])
+        }
+        return true
+    }
+
     useEffect(()=>{
         getShortcuts().then()
     }, [rerender])
@@ -64,30 +80,41 @@ export default function Shortcuts({rerender, dispatcher}: ShortcutProps){
                       <View style={tw`h-1 border-t border-gray-200`}/>
                   )}
                   renderItem={({item})=>(
-            <TouchableOpacity
-                onPress={()=>{
-                    if(!item.setup){
-                        navigation.navigate('SetShortcutScreen', {
-                            action: item.location,
-                            shortcut: item,
-                        })
-                    }else{
-                        if(dispatcher){
-                            dispatcher(item.coordinates)
-                        }
-                    }
-                }}
-                style={tw`flex-row items-center p-3`}>
-                <Icon name={item.icon} style={tw`mr-4 rounded-full bg-gray-300 p-3`} color={"white"} size={17}/>
-                <View>
-                    <Text style={tw`text-regular text-lg text-gray-600`}>
-                        {item.location}
-                    </Text>
-                    <Text style={tw`text-regular text-sm text-gray-500`}>
-                        {item.destination}
-                    </Text>
-                </View>
-            </TouchableOpacity>
+                      skipIfOrigin(item)
+                      &&
+                      <TouchableOpacity
+                          onPress={()=>{
+                              if(edit){
+                                  onEdit(
+                                      {
+                                          action: item.location,
+                                          shortcut: item,
+                                          returnTo: "EmptyScreen"
+                                      }
+                                  )
+                              }
+                              else if(!item.setup){
+                                  navigation.navigate('SetShortcutScreen', {
+                                      action: item.location,
+                                      shortcut: item,
+                                  })
+                              }else{
+                                  if(dispatcher){
+                                      dispatcher(item.coordinates)
+                                  }
+                              }
+                          }}
+                          style={tw`flex-row items-center p-3`}>
+                          <Icon name={item.icon} style={tw`mr-4 rounded-full bg-gray-300 p-3`} color={"white"} size={17}/>
+                          <View>
+                              <Text style={tw`text-regular text-lg text-gray-600`}>
+                                  {item.location}
+                              </Text>
+                              <Text style={tw`text-regular text-sm text-gray-500`}>
+                                  {item.destination}
+                              </Text>
+                          </View>
+                      </TouchableOpacity>
         )}/>
     )
 }
