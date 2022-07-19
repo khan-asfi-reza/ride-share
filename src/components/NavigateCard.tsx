@@ -7,7 +7,6 @@ import {setDestination} from "@slices/navSlice";
 import Shortcuts from "@components/Shortcuts";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import {useNavigation} from "@react-navigation/native";
-import RideOptions from "@components/RideOptions";
 
 function NavigateCard() {
 
@@ -37,15 +36,19 @@ function NavigateCard() {
                                  query={query}
                                  setQuery={setQuery}
                                  onLocationClick={onLocationClick}/>
-                <Shortcuts/>
+                <Shortcuts dispatcher={(coords) => {
+                    dispatch(setDestination({location: coords}))
+                }}
+                originEscape={true}
+                />
             </View>
             <View style={tw`flex-row bg-white justify-evenly py-2 mt-auto border-t border-gray-200`}>
                 <TouchableOpacity
-                onPress={()=>{
-                    // @ts-ignore
-                    navigate.navigate('RideOptionsCard')
-                }}
-                style={tw`flex flex-row justify-between bg-black w-24 px-4 py-2 rounded-full`}
+                    onPress={() => {
+                        // @ts-ignore
+                        navigate.navigate('RideOptionsCard')
+                    }}
+                    style={tw`flex flex-row justify-between bg-black w-24 px-4 py-2 rounded-full`}
                 >
                     <Icon name={"car"} size={16} color={"white"}/>
                     <Text style={tw`text-white text-center text-regular`}>Rides</Text>
