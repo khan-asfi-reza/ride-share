@@ -6,7 +6,23 @@
     <p>A ride sharing mobile application</p>
 </div>
 
-## Get Started
+## Features ✨
+
+- User's Location Setting as Origin Location
+- Destination Location Search
+- User's Work and Home Location Setting
+- Trip Time and Distance Details
+- Inter Country Trip System
+- Location on Map Using Mapbox
+
+## Stack 🪟
+
+- React Native
+- Expo
+- Mapbox
+- Tailwind
+
+## Get Started 🔖
 
 - Install yarn packages
 ```shell
